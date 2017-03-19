@@ -13,8 +13,11 @@ class init{
     public static function autoload($class){
         if(strpos($class,'Controller')){
             $file = CONTROLLER_PATH.$class.'.php';
-            require_once $file;
+        }else{
+            $file = CONTROLLER_PATH.'indexController.php';
         }
+        require_once $file;
+
     }
 
     /*
@@ -24,7 +27,15 @@ class init{
         $router = self::router();
         $crl = $router['crl'];
         $action = $router['action'];
+        $file = CONTROLLER_PATH.$crl.'.php';
+        if(!file_exists($file)){
+            $crl = 'indexController';
+        }
+        require_once SYS_PATH.'Action.php';
         $class = new $crl();
+        if (!method_exists($class,$action)) {
+            $action = 'indexAction';
+        }
         $class->$action();
     }
 
@@ -41,8 +52,7 @@ class init{
 
         //过滤掉url中//这种错误输入出来产生的空值
         $arrRouter = array_diff($arrRouter,array(''));
-
-        print_r($arrRouter);
+        
 
         //用处理后的数组的元素个数作为路由判定条件
         $size = sizeof($arrRouter);

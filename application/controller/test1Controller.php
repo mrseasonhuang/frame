@@ -1,7 +1,7 @@
 <?php
 
 
-class test1Controller{
+class test1Controller extends \Action\Action{
     public function indexAction(){
         echo 'test1.index';
     }
