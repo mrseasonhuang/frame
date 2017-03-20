@@ -12,6 +12,6 @@ defined('LOG_PATH') or define('LOG_PATH',ROOT_PATH.'runtime'.DS);
 
 require_once SYS_PATH.'init.php';
 
-spl_autoload_register('Init\init::autoload');
+spl_autoload_register('System\Init\init::autoload');
 
-Init\init::start();
+System\Init\init::start();

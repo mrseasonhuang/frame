@@ -1,5 +1,5 @@
 <?php
-namespace Action;
+namespace System\Action;
 
 class Action{
     public function __call($name,$arguments){

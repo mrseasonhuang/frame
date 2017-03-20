@@ -1,6 +1,8 @@
 <?php
 
-class indexController extends \Action\Action{
+use System\Action\Action;
+
+class indexController extends Action{
     public function indexAction(){
         echo 'index.index';
     }
