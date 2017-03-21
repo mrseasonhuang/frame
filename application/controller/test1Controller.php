@@ -1,7 +1,8 @@
 <?php
 
+use frame\crl;
 
-class test1Controller extends \Action\Action{
+class test1Controller extends crl{
     public function indexAction(){
         echo 'test1.index';
     }

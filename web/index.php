@@ -6,12 +6,18 @@ defined('DS') or define('DS',DIRECTORY_SEPARATOR);
 defined('ROOT_PATH') or define('ROOT_PATH',realpath(dirname(__FILE__).DS.'..'.DS).DS);
 
 defined('APP_PATH') or define('APP_PATH',ROOT_PATH.'application'.DS);
-defined('SYS_PATH') or define('SYS_PATH',ROOT_PATH.'system'.DS);
+defined('FRAME_PATH') or define('FRAME_PATH',ROOT_PATH.'frame'.DS);
 defined('STATIC_PATH') or define('STATIC_PATH',ROOT_PATH.'web'.DS.'static'.DS);
 defined('LOG_PATH') or define('LOG_PATH',ROOT_PATH.'runtime'.DS);
 
-require_once SYS_PATH.'init.php';
+require_once FRAME_PATH.'init.php';
 
-spl_autoload_register('System\Init\init::autoload');
+spl_autoload_register('\frame\init::autoload');
 
-System\Init\init::start();
+try{
+    \frame\init::start();
+}catch(\frame\UnKnownUrlException $e){
+    $e->jump();
+}catch (Exception $e){
+    echo $e->getMessage();
+}

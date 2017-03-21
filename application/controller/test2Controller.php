@@ -1,4 +1,7 @@
 <?php
-class test2Controller extends Action\Action{
+
+use frame\crl;
+
+class test2Controller extends crl{
 
 }

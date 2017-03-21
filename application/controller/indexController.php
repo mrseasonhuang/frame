@@ -1,13 +1,14 @@
 <?php
 
-use System\Action\Action;
+use frame\crl;
+use application\model\testService;
 
-class indexController extends Action{
+class indexController extends crl{
     public function indexAction(){
-        echo 'index.index';
+        $aa = new gkr();
     }
 
     public function testAction(){
-        echo 'index.test';
+        $bb = new testService();
     }
 }

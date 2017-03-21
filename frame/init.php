@@ -1,5 +1,5 @@
 <?php
-namespace System\Init;
+namespace frame;
 
 defined('CONTROLLER_PATH') or define('CONTROLLER_PATH',APP_PATH.'controller'.DS);
 defined('MODEL_PATH') or define('MODEL_PATH',APP_PATH.'model'.DS);
@@ -7,20 +7,26 @@ defined('VIEW_PATH') or define('VIEW_PATH',APP_PATH.'view'.DS);
 
 class init{
 
-    private static $arrSYS = array('Action','init');
+    //private static $arrSYS = array('Action','init');
     /*
      * 自动加载自定义方法
      */
     public static function autoload($class){
         if(strpos($class,'Controller')){
             $file = CONTROLLER_PATH.$class.'.php';
-        }elseif(in_array($class,self::$arrSYS)){
-            $file = SYS_PATH.$class.'.php';
+        }elseif(strpos($class,'Exception')){
+            $file = FRAME_PATH.'exception.php';
         }else{
-            $file = CONTROLLER_PATH.'indexController.php';
+            echo str_replace("\\",'/',$class).'<br>';
+            $file = ROOT_PATH.str_replace("\\",'/',$class).'.php';
         }
-        require_once $file;
-
+        echo ROOT_PATH.'<br>';
+        echo $file.'<br>';
+        if(file_exists($file)){
+            require_once $file;
+        }else{
+            throw new \Exception($class.' is not found!');
+        }
     }
 
     /*
@@ -32,12 +38,12 @@ class init{
         $action = $router['action'];
         $file = CONTROLLER_PATH.$crl.'.php';
         if(!file_exists($file)){
-            $crl = 'indexController';
+            throw new UnKnownUrlException('您访问的页面不存在');
         }
-        /*require_once SYS_PATH.'Action.php';*/
+
         $class = new $crl();
         if (!method_exists($class,$action)) {
-            $action = 'indexAction';
+            throw new UnKnownUrlException('您访问的页面不存在');
         }
         $class->$action();
     }

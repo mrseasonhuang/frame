@@ -1,7 +1,7 @@
 <?php
-namespace System\Action;
+namespace frame;
 
-class Action{
+class crl{
     public function __call($name,$arguments){
         header("HTTP/1.1 404 Not Found");
         header("Status: 404 Not Found");
