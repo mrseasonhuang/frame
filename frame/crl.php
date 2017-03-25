@@ -1,6 +1,11 @@
 <?php
 namespace frame;
 
+/**
+ * Class crl
+ * @package frame
+ * controller的基础类，定义一些公共处理方法
+ */
 class crl{
     public function __call($name,$arguments){
         header("HTTP/1.1 404 Not Found");

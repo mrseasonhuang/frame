@@ -7,7 +7,6 @@ defined('VIEW_PATH') or define('VIEW_PATH',APP_PATH.'view'.DS);
 
 class init{
 
-    //private static $arrSYS = array('Action','init');
     /*
      * 自动加载自定义方法
      */
@@ -17,42 +16,42 @@ class init{
         }elseif(strpos($class,'Exception')){
             $file = FRAME_PATH.'exception.php';
         }else{
-            echo str_replace("\\",'/',$class).'<br>';
             $file = ROOT_PATH.str_replace("\\",'/',$class).'.php';
         }
-        echo ROOT_PATH.'<br>';
-        echo $file.'<br>';
-        if(file_exists($file)){
-            require_once $file;
-        }else{
-            throw new \Exception($class.' is not found!');
-        }
+
+        method::frameRequire($file);
     }
 
     /*
      * 初始化启动
      */
     public static function start(){
+        //载入错误处理机制
+        self::setErrorReporting();
+
         $router = self::router();
         $crl = $router['crl'];
         $action = $router['action'];
         $file = CONTROLLER_PATH.$crl.'.php';
-        if(!file_exists($file)){
-            throw new UnKnownUrlException('您访问的页面不存在');
+        try{
+            if(!file_exists($file)){
+                throw new UnKnownUrlException('您访问的页面不存在');
+            }
+            $class = new $crl();
+            if (!method_exists($class,$action)) {
+                throw new UnKnownUrlException('您访问的页面不存在');
+            }
+            $class->$action();
+        } catch(UnKnownUrlException $e){
+            $e->dealException();
         }
-
-        $class = new $crl();
-        if (!method_exists($class,$action)) {
-            throw new UnKnownUrlException('您访问的页面不存在');
-        }
-        $class->$action();
     }
 
     /*
      * 定义访问的路由规则
      */
     private static function router(){
-        $request = $_SERVER['REQUEST_URI'];
+        $request = strtolower($_SERVER['REQUEST_URI']);
         $crlName = 'index';
         $actionName = 'index';
 
@@ -73,5 +72,20 @@ class init{
         }
 
         return ['crl'=>$crlName.'Controller','action'=>$actionName.'Action'];
+    }
+
+    /**
+     * 错误处理机制，对于线上环境不报错，测试环境报错
+     */
+    private static function setErrorReporting(){
+        if(ENV == 'online'){
+            error_reporting(E_ALL & ~E_NOTICE & ~E_NOTICE);
+            ini_set('display_errors','Off');
+            ini_set('log_errors', 'On');
+            ini_set('error_log', LOG_PATH. 'phpError.log');
+        }else{
+            error_reporting(E_ALL);
+            ini_set('display_errors','On');
+        }
     }
 }
