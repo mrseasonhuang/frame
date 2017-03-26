@@ -9,18 +9,22 @@ namespace frame;
  * @package frame
  * 封装框架自身的异常处理基本类
  */
-class FrameException extends \Exception{
+abstract class FrameException extends \Exception{
+
+    protected  $_Log;
 
     final public function dealException(){
         if(ENV == 'online'){
+            $this->_Log = new ExceptionLog($this);
             $this->dealOnline();
         }else{
-            echo $this->getMessage();
+            //利用Exception 的 __toString
+            echo $this."\n";
             exit;
         }
     }
 
-    protected function dealOnline(){}
+    abstract protected function dealOnline();
 }
 
 /**
@@ -31,7 +35,8 @@ class FrameException extends \Exception{
 class UnKnownUrlException extends FrameException{
 
     protected function dealOnline(){
-        error_log($this->getMessage()."\n",3,LOG_PATH.'exception-'.date('Ymd').'log');
+        //error_log($this->getMessage()."\n",3,LOG_PATH.'exception-'.date('Ymd').'log');
+        $this->_Log->formatLog();
         header('LOCATION:/index/index');
         exit;
     }
@@ -46,7 +51,7 @@ class UnKnownUrlException extends FrameException{
 class UnKnownFileException extends FrameException{
 
     protected function dealOnline(){
-        error_log($this->getMessage()."\n",3,LOG_PATH.'exception-'.date('Ymd').'.log');
+        $this->_Log->formatLog();
         header("HTTP/1.1 404 Not Found");
         header("Status: 404 Not Found");
         include_once '404.html';

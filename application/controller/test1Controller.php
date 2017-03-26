@@ -1,8 +1,9 @@
 <?php
 
-use frame\crl;
+use frame\Crl;
+use application\model\testService;
 
-class test1Controller extends crl{
+class test1Controller extends Crl{
     public function indexAction(){
         echo 'test1.index';
     }
@@ -10,5 +11,6 @@ class test1Controller extends crl{
     public function test2Action(){
         echo 'test1.test2';
     }
+
 }
 

@@ -12,9 +12,9 @@ defined('STATIC_PATH') or define('STATIC_PATH',ROOT_PATH.'web'.DS.'static'.DS);
 defined('LOG_PATH') or define('LOG_PATH',ROOT_PATH.'runtime'.DS);
 
 require_once CONF_PATH.'config.php';
-require_once FRAME_PATH.'init.php';
-require_once FRAME_PATH.'method.php';
+require_once FRAME_PATH.'Init.php';
+require_once FRAME_PATH.'Method.php';
 
-spl_autoload_register('\frame\init::autoload');
+spl_autoload_register('\frame\Init::autoload');
 
-\frame\init::start();
+\frame\Init::start();

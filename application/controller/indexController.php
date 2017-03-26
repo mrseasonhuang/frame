@@ -1,9 +1,9 @@
 <?php
 
-use frame\crl;
+use frame\Crl;
 use application\model\testService;
 
-class indexController extends crl{
+class indexController extends Crl{
     public function indexAction(){
         $aa = new gkr();
     }

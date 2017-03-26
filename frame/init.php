@@ -5,21 +5,24 @@ defined('CONTROLLER_PATH') or define('CONTROLLER_PATH',APP_PATH.'controller'.DS)
 defined('MODEL_PATH') or define('MODEL_PATH',APP_PATH.'model'.DS);
 defined('VIEW_PATH') or define('VIEW_PATH',APP_PATH.'view'.DS);
 
-class init{
+
+class Init{
 
     /*
      * 自动加载自定义方法
      */
     public static function autoload($class){
-        if(strpos($class,'Controller')){
+        if(strpos($class,'Controller')){   //由于不支持 new \application\controller\$crl(); 这样的形式，所以特殊处理控制器
             $file = CONTROLLER_PATH.$class.'.php';
+        }elseif(strpos($class,'Log')){
+            $file = FRAME_PATH.'Log.php';
         }elseif(strpos($class,'Exception')){
-            $file = FRAME_PATH.'exception.php';
+            $file = FRAME_PATH.'Exception.php';
         }else{
             $file = ROOT_PATH.str_replace("\\",'/',$class).'.php';
         }
 
-        method::frameRequire($file);
+        Method::frameRequire($file);
     }
 
     /*
@@ -35,11 +38,11 @@ class init{
         $file = CONTROLLER_PATH.$crl.'.php';
         try{
             if(!file_exists($file)){
-                throw new UnKnownUrlException('您访问的页面不存在');
+                throw new UnKnownUrlException('控制器不存在！');
             }
             $class = new $crl();
             if (!method_exists($class,$action)) {
-                throw new UnKnownUrlException('您访问的页面不存在');
+                throw new UnKnownUrlException('方法不存在');
             }
             $class->$action();
         } catch(UnKnownUrlException $e){

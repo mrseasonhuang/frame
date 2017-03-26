@@ -1,0 +1,6 @@
+[26-Mar-2017 18:19:18 Europe/Paris] PHP Fatal error:  Class 'frame\ExceptionLog' not found in F:\wamp\www\frame\frame\Exception.php on line 35
+[26-Mar-2017 18:19:18 Europe/Paris] PHP Stack trace:
+[26-Mar-2017 18:19:18 Europe/Paris] PHP   1. {main}() F:\wamp\www\frame\web\index.php:0
+[26-Mar-2017 18:19:18 Europe/Paris] PHP   2. frame\Init::start() F:\wamp\www\frame\web\index.php:20
+[26-Mar-2017 18:19:18 Europe/Paris] PHP   3. frame\FrameException->dealException() F:\wamp\www\frame\frame\Init.php:46
+[26-Mar-2017 18:19:18 Europe/Paris] PHP   4. frame\UnKnownUrlException->dealOnline() F:\wamp\www\frame\frame\Exception.php:16

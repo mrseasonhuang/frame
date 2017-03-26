@@ -5,7 +5,7 @@ namespace frame;
  * 常用的公共方法
  */
 
-class method{
+class Method{
 
     /**
      * @param $file

@@ -1,0 +1,24 @@
+2017-03-26 19:29:23 exception 'frame\UnKnownUrlException' with message '方法不存在' in F:\wamp\www\frame\frame\Init.php:45
+Stack trace:
+#0 F:\wamp\www\frame\web\index.php(20): frame\Init::start()
+#1 {main}
+
+2017-03-26 19:29:37 exception 'frame\UnKnownUrlException' with message '方法不存在' in F:\wamp\www\frame\frame\Init.php:45
+Stack trace:
+#0 F:\wamp\www\frame\web\index.php(20): frame\Init::start()
+#1 {main}
+
+2017-03-26 19:31:49 exception 'frame\UnKnownUrlException' with message '方法不存在' in F:\wamp\www\frame\frame\Init.php:45
+Stack trace:
+#0 F:\wamp\www\frame\web\index.php(20): frame\Init::start()
+#1 {main}
+
+2017-03-26 19:31:49 exception 'frame\UnKnownFileException' with message 'F:\wamp\www\frame\gkr.php is not found' in F:\wamp\www\frame\frame\Method.php:25
+Stack trace:
+#0 F:\wamp\www\frame\frame\Init.php(25): frame\Method::frameRequire('F:\\wamp\\www\\fra...')
+#1 [internal function]: frame\Init::autoload('gkr')
+#2 F:\wamp\www\frame\application\controller\indexController.php(8): spl_autoload_call('gkr')
+#3 F:\wamp\www\frame\frame\Init.php(47): indexController->indexAction()
+#4 F:\wamp\www\frame\web\index.php(20): frame\Init::start()
+#5 {main}
+
