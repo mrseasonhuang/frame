@@ -29,4 +29,19 @@ class Method{
         }
     }
 
+
+    /**
+     * @param $path
+     * @return bool
+     * 检查该目录是否是可写目录,并且当目录不存在时创建目录
+     */
+    public static function checkPath($path){
+        if(is_dir($path)){
+            return is_writable($path);
+        }
+        else{
+            return mkdir($path, 777, true);
+        }
+    }
+
 }
