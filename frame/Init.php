@@ -12,11 +12,7 @@ class Init{
      * 自动加载自定义方法
      */
     public static function autoload($class){
-        if(strpos($class,'Controller')){   //由于不支持 new \application\controller\$crl(); 这样的形式，所以特殊处理控制器
-            $file = CONTROLLER_PATH.$class.'.php';
-        }elseif(strpos($class,'Log')){
-            $file = FRAME_PATH.'Log.php';
-        }elseif(strpos($class,'Exception')){
+        if(strpos($class,'Exception')){
             $file = FRAME_PATH.'Exception.php';
         }else{
             $file = ROOT_PATH.str_replace("\\",'/',$class).'.php';
@@ -30,7 +26,7 @@ class Init{
      */
     public static function start(){
         //载入错误处理机制
-        self::setErrorReporting();
+        //self::setErrorReporting();
 
         $router = self::router();
         $crl = $router['crl'];
@@ -40,6 +36,7 @@ class Init{
             if(!file_exists($file)){
                 throw new UnKnownUrlException('控制器不存在！');
             }
+            Method::frameRequire($file);
             $class = new $crl();
             if (!method_exists($class,$action)) {
                 throw new UnKnownUrlException('方法不存在');

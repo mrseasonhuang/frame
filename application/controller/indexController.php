@@ -5,10 +5,10 @@ use application\model\testService;
 
 class indexController extends Crl{
     public function indexAction(){
-        $aa = new gkr();
+        //$aa = new gkr();
     }
 
     public function testAction(){
-        $bb = new testService();
+        $bb = new ff();
     }
 }

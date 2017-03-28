@@ -11,9 +11,11 @@ defined('FRAME_PATH') or define('FRAME_PATH',ROOT_PATH.'frame'.DS);
 defined('STATIC_PATH') or define('STATIC_PATH',ROOT_PATH.'web'.DS.'static'.DS);
 defined('LOG_PATH') or define('LOG_PATH',ROOT_PATH.'runtime'.DS);
 
+//加载框架运行基本的文件
 require_once CONF_PATH.'config.php';
 require_once FRAME_PATH.'Init.php';
 require_once FRAME_PATH.'Method.php';
+require_once FRAME_PATH.'Log.php';
 
 spl_autoload_register('\frame\Init::autoload');
 

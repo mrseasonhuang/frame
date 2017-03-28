@@ -15,7 +15,7 @@ abstract class FrameException extends \Exception{
 
     final public function dealException(){
         if(ENV == 'online'){
-            $this->_Log = new ExceptionLog($this);
+            $this->_Log = LogFactory::load(LOG_EXCEPTION,$this);
             $this->dealOnline();
         }else{
             //利用Exception 的 __toString
@@ -35,8 +35,9 @@ abstract class FrameException extends \Exception{
 class UnKnownUrlException extends FrameException{
 
     protected function dealOnline(){
-        //error_log($this->getMessage()."\n",3,LOG_PATH.'exception-'.date('Ymd').'log');
-        $this->_Log->formatLog();
+        if($this->_Log != false){
+           $this->_Log->formatLog();
+        }
         header('LOCATION:/index/index');
         exit;
     }
@@ -51,7 +52,9 @@ class UnKnownUrlException extends FrameException{
 class UnKnownFileException extends FrameException{
 
     protected function dealOnline(){
-        $this->_Log->formatLog();
+        if($this->_Log != false){
+            $this->_Log->formatLog();
+        }
         header("HTTP/1.1 404 Not Found");
         header("Status: 404 Not Found");
         include_once '404.html';

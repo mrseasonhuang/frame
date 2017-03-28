@@ -4,3 +4,33 @@
 [26-Mar-2017 18:19:18 Europe/Paris] PHP   2. frame\Init::start() F:\wamp\www\frame\web\index.php:20
 [26-Mar-2017 18:19:18 Europe/Paris] PHP   3. frame\FrameException->dealException() F:\wamp\www\frame\frame\Init.php:46
 [26-Mar-2017 18:19:18 Europe/Paris] PHP   4. frame\UnKnownUrlException->dealOnline() F:\wamp\www\frame\frame\Exception.php:16
+[28-Mar-2017 05:31:04 Europe/Paris] PHP Fatal error:  Call to a member function formatLog() on a non-object in C:\wamp\www\frame\frame\Exception.php on line 55
+[28-Mar-2017 05:31:04 Europe/Paris] PHP Stack trace:
+[28-Mar-2017 05:31:04 Europe/Paris] PHP   1. {main}() C:\wamp\www\frame\web\index.php:0
+[28-Mar-2017 05:31:04 Europe/Paris] PHP   2. frame\Init::start() C:\wamp\www\frame\web\index.php:22
+[28-Mar-2017 05:31:04 Europe/Paris] PHP   3. indexController->indexAction() C:\wamp\www\frame\frame\Init.php:47
+[28-Mar-2017 05:31:04 Europe/Paris] PHP   4. spl_autoload_call() C:\wamp\www\frame\frame\Init.php:8
+[28-Mar-2017 05:31:04 Europe/Paris] PHP   5. frame\Init::autoload() C:\wamp\www\frame\frame\Init.php:0
+[28-Mar-2017 05:31:04 Europe/Paris] PHP   6. frame\Method::frameRequire() C:\wamp\www\frame\frame\Init.php:25
+[28-Mar-2017 05:31:04 Europe/Paris] PHP   7. frame\FrameException->dealException() C:\wamp\www\frame\frame\Method.php:28
+[28-Mar-2017 05:31:04 Europe/Paris] PHP   8. frame\UnKnownFileException->dealOnline() C:\wamp\www\frame\frame\Exception.php:19
+[28-Mar-2017 05:31:15 Europe/Paris] PHP Fatal error:  Call to a member function formatLog() on a non-object in C:\wamp\www\frame\frame\Exception.php on line 55
+[28-Mar-2017 05:31:15 Europe/Paris] PHP Stack trace:
+[28-Mar-2017 05:31:15 Europe/Paris] PHP   1. {main}() C:\wamp\www\frame\web\index.php:0
+[28-Mar-2017 05:31:15 Europe/Paris] PHP   2. frame\Init::start() C:\wamp\www\frame\web\index.php:22
+[28-Mar-2017 05:31:15 Europe/Paris] PHP   3. indexController->indexAction() C:\wamp\www\frame\frame\Init.php:47
+[28-Mar-2017 05:31:15 Europe/Paris] PHP   4. spl_autoload_call() C:\wamp\www\frame\frame\Init.php:8
+[28-Mar-2017 05:31:15 Europe/Paris] PHP   5. frame\Init::autoload() C:\wamp\www\frame\frame\Init.php:0
+[28-Mar-2017 05:31:15 Europe/Paris] PHP   6. frame\Method::frameRequire() C:\wamp\www\frame\frame\Init.php:25
+[28-Mar-2017 05:31:15 Europe/Paris] PHP   7. frame\FrameException->dealException() C:\wamp\www\frame\frame\Method.php:28
+[28-Mar-2017 05:31:15 Europe/Paris] PHP   8. frame\UnKnownFileException->dealOnline() C:\wamp\www\frame\frame\Exception.php:19
+[28-Mar-2017 05:33:47 Europe/Paris] PHP Fatal error:  Call to a member function formatLog() on a non-object in C:\wamp\www\frame\frame\Exception.php on line 55
+[28-Mar-2017 05:33:47 Europe/Paris] PHP Stack trace:
+[28-Mar-2017 05:33:47 Europe/Paris] PHP   1. {main}() C:\wamp\www\frame\web\index.php:0
+[28-Mar-2017 05:33:47 Europe/Paris] PHP   2. frame\Init::start() C:\wamp\www\frame\web\index.php:22
+[28-Mar-2017 05:33:47 Europe/Paris] PHP   3. indexController->indexAction() C:\wamp\www\frame\frame\Init.php:47
+[28-Mar-2017 05:33:47 Europe/Paris] PHP   4. spl_autoload_call() C:\wamp\www\frame\frame\Init.php:8
+[28-Mar-2017 05:33:47 Europe/Paris] PHP   5. frame\Init::autoload() C:\wamp\www\frame\frame\Init.php:0
+[28-Mar-2017 05:33:47 Europe/Paris] PHP   6. frame\Method::frameRequire() C:\wamp\www\frame\frame\Init.php:25
+[28-Mar-2017 05:33:47 Europe/Paris] PHP   7. frame\FrameException->dealException() C:\wamp\www\frame\frame\Method.php:28
+[28-Mar-2017 05:33:47 Europe/Paris] PHP   8. frame\UnKnownFileException->dealOnline() C:\wamp\www\frame\frame\Exception.php:19
