@@ -26,12 +26,13 @@ class Init{
      */
     public static function start(){
         //载入错误处理机制
-        //self::setErrorReporting();
+        self::setErrorReporting();
 
         $router = self::router();
         $crl = $router['crl'];
         $action = $router['action'];
         $file = CONTROLLER_PATH.$crl.'.php';
+
         try{
             if(!file_exists($file)){
                 throw new UnKnownUrlException('控制器不存在！');

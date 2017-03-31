@@ -3,7 +3,7 @@ namespace application\model;
 
 use frame\method;
 
-class db{
+class dbService{
     //用于保存实例化对象
     private static $_instance;
 
