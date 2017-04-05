@@ -8,6 +8,7 @@ namespace frame;
 
 //此处定义工厂实例化类型，便于使用，增加可读性 用LOG_开头
 defined('LOG_EXCEPTION') or define('LOG_EXCEPTION','Exception');
+defined('LOG_REQUEST') or define('LOG_REQUEST','Request');
 
 /**
  * Class LogBase
@@ -46,7 +47,7 @@ class LogFactory{
      * @return bool
      * 动态加载的工厂方法
      */
-    public static function load($logType,$params){
+    public static function load($logType,$params=''){
         $logType .= 'Log';
         //在命名空间下class_exists中的类名必须用全称
         $className = "\\frame\\{$logType}";
@@ -81,5 +82,39 @@ class ExceptionLog extends  LogBase{
     public function formatLog(){
         $content = date('Y-m-d H:i:s').' '.$this->exception."\n";
         $this->saveLog($content,$this->_logPath,'exception-'.date('Ymd').'.log');
+    }
+}
+
+/**
+ * Class RequestLog
+ * @package frame
+ * 外部请求的log，包括访问url和参数记录
+ */
+class RequestLog extends LogBase{
+
+    public function __construct(){
+        //若不重写，默认日志记录在debug里面
+        $this->_logPath = LOG_PATH.'request'.DS;
+    }
+
+    public function formatLog(){
+        $requestType = $_SERVER['REQUEST_METHOD'];
+        $contentType = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+        $requestUrl = $_SERVER['REQUEST_URI'];
+        $time = date('Y-m-d H:i:s');
+        $requestData = '';
+        if($requestType == 'POST'){
+            $requestData = Method::getInput();
+        }
+        $content = "$time $requestType $requestUrl $requestData $contentType\n";
+        $this->saveLog($content,$this->_logPath,'request-'.date('Ymd').'.log');
+    }
+
+}
+
+class CommonLog extends LogBase{
+
+    public function formatLog(){
+
     }
 }

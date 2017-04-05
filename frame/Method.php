@@ -44,4 +44,18 @@ class Method{
         }
     }
 
+    /**
+     * @return string
+     * 获取post请求的参数
+     */
+    public static function getInput(){
+        if($_POST){
+            $input = http_build_query($_POST);
+        }else{
+            $input = file_get_contents("php://input");
+        }
+        return $input;
+    }
+
+
 }

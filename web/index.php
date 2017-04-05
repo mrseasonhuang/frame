@@ -19,4 +19,6 @@ require_once FRAME_PATH.'Log.php';
 
 spl_autoload_register('\frame\Init::autoload');
 
+\frame\LogFactory::load(LOG_REQUEST)->formatLog();
+
 \frame\Init::start();

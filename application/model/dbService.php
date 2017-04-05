@@ -2,6 +2,7 @@
 namespace application\model;
 
 use frame\method;
+use frame\LogFactory;
 
 class dbService{
     //用于保存实例化对象
@@ -38,7 +39,7 @@ class dbService{
      */
     public static function getInstance(){
         if(empty(self::$_instance)){
-            self::$_instance = new db();
+            self::$_instance = new dbService();
         }
         return self::$_instance;
     }
@@ -68,14 +69,15 @@ class dbService{
      */
     private static function doConnection($conf){
         try{
-            $pdo = new PDO($conf['dsn'],$conf['user'],$conf['password']);
-        }catch(PDOException $e){
-            error_log('['.date('H:i:s').'] '.$e->getMessage()."\n",3,LOG_PATH.'exception-'.date('Ymd').'log');
+            $pdo = new \PDO($conf['dsn'],$conf['user'],$conf['password']);
+        }catch(\PDOException $e){
+            LogFactory::load(LOG_EXCEPTION)->formatLog();
             exit;
         }
         return $pdo;
     }
 
+    /*-------------------------------------------具体数据库操作写下面--------------------------------------------------*/
 
     /*
      * 简单的一个select例子，要用于实际框架中需要改写成灵活的查询方法
@@ -87,10 +89,43 @@ class dbService{
         }else{
             $connection = self::initConnection();
         }
-        $sql = 'select * from users_master limit 10';
+        $sql = 'select * from test';
         $query = $connection->prepare($sql);
         $query->execute();
-        $res = $query->fetchAll(PDO::FETCH_ASSOC);
+        $res = $query->fetchAll(\PDO::FETCH_ASSOC);
+        return $res;
+    }
+
+    /**
+     * @param $table
+     * @param $content
+     * @param $where
+     * @param array $params
+     */
+    public function selectOne($table,$content,$where,$params=array()){
+        if(ENV == 'online'){
+            $connection = self::initConnection('read');
+        }else{
+            $connection = self::initConnection();
+        }
+        $sql = "select $content from $table";
+        if($where) $sql .= ' where '.$where;
+        $res = $this->executeQuery($connection,$sql,$params);
+        return $res;
+    }
+
+    private function executeQuery($connection,$sql,$params=array()){
+        try{
+            $query = $connection->prepare($sql);
+            $queryRes = $query->execute($params);
+            if($queryRes === false){
+                $msg = 'SQL:'.$sql.' PARAMS:'.json_encode($params).' was wrong!';
+                throw new \PDOException($msg);
+            }
+        }catch (\PDOException $e){
+            echo $e->getMessage();
+        }
+        $res = $query->fetchAll(\PDO::FETCH_ASSOC);
         return $res;
     }
 

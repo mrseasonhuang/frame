@@ -5,7 +5,7 @@
 
 if(ENV=='debug'){
     $db = [
-        'dsn'=>'mysql:host=127.0.0.1;dbname=mydb',
+        'dsn'=>'mysql:host=127.0.0.1;dbname=frame',
         'user'=>'root',
         'password'=>''
     ];
