@@ -8,34 +8,16 @@ class indexController extends Crl{
     public function indexAction(){
         //phpinfo();exit;
         $db = dbService::getInstance();
-        $where = 'tes1 = ?';
-        $params = array('gg');
-        $res = $db->selectOne('test','*',$where,$params);
+        $rowArr = array('tes1','test2');
+        $valueArr = array(
+            array('asgasga','ashshashas'),
+            array('asgasha','sdhsdhsj')
+        );
+        $res = $db->insert('test',$valueArr,$rowArr);
         print_r($res);
     }
 
     public function testAction(){
-        $url = 'http://local.frame.com:8080/index/index?ccc=ccc&ddd=ddd&hfdhrdhsdfsdhsd';
-        $url2 = 'http://www.myframe.com/index/index';
-        $ch = curl_init($url);
-        $post_data = array(
-            'aaa'=>'aaa',
-            'bbb'=>'bbb'
-        );
-        $post_json = json_encode($post_data);
-        $header = array(
-            //'Content-Type:application/json',
-            //'Content-Length:'.strlen($post_json),
-            //'Accept : application/json'
-        );
-
-        curl_setopt($ch,CURLOPT_POST,1);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-        curl_setopt($ch,CURLOPT_POSTFIELDS,$post_data);
-        curl_setopt($ch,CURLOPT_HTTPHEADER,$header);
-        curl_setopt($ch,CURLOPT_TIMEOUT,5);
-        $res = curl_exec($ch);
-        curl_close($ch);
-        print_r($res);
+        echo 1;
     }
 }

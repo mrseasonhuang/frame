@@ -27,6 +27,8 @@ class Init{
     public static function start(){
         //载入错误处理机制
         self::setErrorReporting();
+        //设置编码类型
+        header("Content-type: text/html; charset=utf-8");
 
         $router = self::router();
         $crl = $router['crl'];

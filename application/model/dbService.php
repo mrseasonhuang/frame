@@ -71,7 +71,11 @@ class dbService{
         try{
             $pdo = new \PDO($conf['dsn'],$conf['user'],$conf['password']);
         }catch(\PDOException $e){
-            LogFactory::load(LOG_EXCEPTION)->formatLog();
+            if(ENV == 'online'){
+                LogFactory::load(LOG_EXCEPTION,$e)->formatLog();
+            }else{
+                echo $e;
+            }
             exit;
         }
         return $pdo;
@@ -110,23 +114,75 @@ class dbService{
         }
         $sql = "select $content from $table";
         if($where) $sql .= ' where '.$where;
-        $res = $this->executeQuery($connection,$sql,$params);
+        $res = $this->executeQuery($connection,$sql,$params)->fetch(\PDO::FETCH_ASSOC);;
         return $res;
+    }
+
+    /**
+     * @param $table
+     * @param $content
+     * @param $where
+     * @param array $params
+     * @return mixed
+     */
+    public function selectAll($table,$content,$where,$params=array()){
+        if(ENV == 'online'){
+            $connection = self::initConnection('read');
+        }else{
+            $connection = self::initConnection();
+        }
+        $sql = "select $content from $table";
+        if($where) $sql .= ' where '.$where;
+        $res = $this->executeQuery($connection,$sql,$params)->fetchAll(\PDO::FETCH_ASSOC);;
+        return $res;
+    }
+
+    public function insert($table,$valueArr,$rowArr=array()){
+        if(ENV == 'online'){
+            $connection = self::initConnection('write');
+        }else{
+            $connection = self::initConnection();
+        }
+        if(!empty($rowArr)){
+            $row = '(';
+            foreach($rowArr as $value){
+                $row .= $value.',';
+            }
+            $row = rtrim($row,',');
+            $row .= ')';
+            unset($value);
+        }
+        $values = '';
+        $params = array();
+        foreach($valueArr as $value){
+            $values .= '(';
+            foreach($value as $v){
+                $values .= $v.',';
+            }
+            $values = rtrim($values,',');
+            $values .= '),';
+        }
+        $values = rtrim($values,',');
+        echo $row.'<br>'.$values;
+
     }
 
     private function executeQuery($connection,$sql,$params=array()){
         try{
+            if(substr_count($sql,'?') != count($params)){
+                throw new \PDOException('参数数量不匹配');
+            }
             $query = $connection->prepare($sql);
             $queryRes = $query->execute($params);
             if($queryRes === false){
                 $msg = 'SQL:'.$sql.' PARAMS:'.json_encode($params).' was wrong!';
                 throw new \PDOException($msg);
             }
+            return $query;
         }catch (\PDOException $e){
             echo $e->getMessage();
+            exit;
         }
-        $res = $query->fetchAll(\PDO::FETCH_ASSOC);
-        return $res;
     }
 
 

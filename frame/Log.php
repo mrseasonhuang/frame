@@ -93,7 +93,6 @@ class ExceptionLog extends  LogBase{
 class RequestLog extends LogBase{
 
     public function __construct(){
-        //若不重写，默认日志记录在debug里面
         $this->_logPath = LOG_PATH.'request'.DS;
     }
 
@@ -110,6 +109,22 @@ class RequestLog extends LogBase{
         $this->saveLog($content,$this->_logPath,'request-'.date('Ymd').'.log');
     }
 
+}
+
+/**
+ * Class StorageLog
+ * @package frame
+ * 操作数据库，redis的错误日志记录
+ */
+class StorageLog extends LogBase{
+
+    public function __construct(){
+        $this->_logPath = LOG_PATH.'storage'.DS;
+    }
+
+    public function formatLog(){
+        
+    }
 }
 
 class CommonLog extends LogBase{
