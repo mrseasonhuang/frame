@@ -70,6 +70,7 @@ class dbService{
     private static function doConnection($conf){
         try{
             $pdo = new \PDO($conf['dsn'],$conf['user'],$conf['password']);
+            $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }catch(\PDOException $e){
             if(ENV == 'online'){
                 LogFactory::load(LOG_EXCEPTION,$e)->formatLog();
@@ -101,12 +102,13 @@ class dbService{
     }
 
     /**
-     * @param $table
-     * @param $content
-     * @param $where
-     * @param array $params
+     * @param $table 表名
+     * @param $content 需要查找出的字段
+     * @param $where 查询条件
+     * @param array $params 条件参数
+     * 查找一条数据
      */
-    public function selectOne($table,$content,$where,$params=array()){
+    public function selectOne($table,$content,$where='',$params=array()){
         if(ENV == 'online'){
             $connection = self::initConnection('read');
         }else{
@@ -119,13 +121,14 @@ class dbService{
     }
 
     /**
-     * @param $table
-     * @param $content
-     * @param $where
-     * @param array $params
+     * @param $table 表名
+     * @param $content 需要查找出的字段
+     * @param $where 查询条件
+     * @param array $params 条件参数
      * @return mixed
+     * 查找满足条件的所有数据
      */
-    public function selectAll($table,$content,$where,$params=array()){
+    public function selectAll($table,$content,$where='',$params=array()){
         if(ENV == 'online'){
             $connection = self::initConnection('read');
         }else{
@@ -137,34 +140,50 @@ class dbService{
         return $res;
     }
 
-    public function insert($table,$valueArr,$rowArr=array()){
+    /**
+     * @param $table 表名
+     * @param $insertArr 需插入数组
+     * @return bool 插入成功返回true 否则返回false
+     * 根据输入数组插入数据。
+     * 其中插入数组中key为表中的column,value为要插入的值
+     */
+    public function insertOne($table,$insertArr){
         if(ENV == 'online'){
             $connection = self::initConnection('write');
         }else{
             $connection = self::initConnection();
         }
-        if(!empty($rowArr)){
-            $row = '(';
-            foreach($rowArr as $value){
-                $row .= $value.',';
-            }
-            $row = rtrim($row,',');
-            $row .= ')';
-            unset($value);
+        if(empty($insertArr) || !is_array($insertArr)){
+            return false;
         }
-        $values = '';
-        $params = array();
-        foreach($valueArr as $value){
-            $values .= '(';
-            foreach($value as $v){
-                $values .= $v.',';
-            }
-            $values = rtrim($values,',');
-            $values .= '),';
+        $column = implode(',',array_keys($insertArr));
+        $count = count($insertArr);
+        $tempStr = '';
+        while($count > 0){
+            $tempStr .= '?,';
+            $count --;
         }
-        $values = rtrim($values,',');
-        echo $row.'<br>'.$values;
+        $tempStr = rtrim($tempStr,',');
+        $sql = "insert into $table ($column) values ($tempStr)";
+        $value = array_values($insertArr);
+        $res = $this->executeQuery($connection,$sql,$value);
+        if($res){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
+    public function updateOne($table,$updateArr,$where){
+        if(ENV == 'online'){
+            $connection = self::initConnection('write');
+        }else{
+            $connection = self::initConnection();
+        }
+        if(empty($insertArr) || !is_array($insertArr)){
+            return false;
+        }
+        
     }
 
     private function executeQuery($connection,$sql,$params=array()){
@@ -173,15 +192,11 @@ class dbService{
                 throw new \PDOException('参数数量不匹配');
             }
             $query = $connection->prepare($sql);
-            $queryRes = $query->execute($params);
-            if($queryRes === false){
-                $msg = 'SQL:'.$sql.' PARAMS:'.json_encode($params).' was wrong!';
-                throw new \PDOException($msg);
-            }
+            $query->execute($params);
             return $query;
         }catch (\PDOException $e){
             echo $e->getMessage();
-            exit;
+            return false;
         }
     }
 
