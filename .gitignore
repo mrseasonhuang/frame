@@ -47,3 +47,6 @@ Temporary Items
 .apdisk
 runtime/exception/exception-20170328.log
 .idea/workspace.xml
+*.xml
+runtime/request/request-20170406.log
+*.log
