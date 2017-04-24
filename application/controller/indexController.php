@@ -8,13 +8,13 @@ class indexController extends Crl{
     public function indexAction(){
         //phpinfo();exit;
         $db = dbService::getInstance();
-        $insertArr = array(
-            'tes1'=>'gg',
-            'test2'=>'valssue2',
+        $table = 'testd';
+        $updateArr = array(
+            'tesss1'=>'bbbcc',
+            'test2'=>'cccfffffcc'
         );
-        $res = $db->insertOne('test',$insertArr);
-        $res2 = $db->selectOne('test','*',' tes1 = ?',array('gg'));
-        var_dump($res2);
+        $where = "tes1 = 'bbb'";
+        $res = $db->updateOne($table,$updateArr,$where);
         var_dump($res);
     }
 

@@ -9,6 +9,7 @@ namespace frame;
 //此处定义工厂实例化类型，便于使用，增加可读性 用LOG_开头
 defined('LOG_EXCEPTION') or define('LOG_EXCEPTION','Exception');
 defined('LOG_REQUEST') or define('LOG_REQUEST','Request');
+defined('LOG_STORAGE') or define('LOG_STORAGE','Storage');
 
 /**
  * Class LogBase
@@ -19,6 +20,10 @@ abstract class LogBase{
 
     protected $_logPath = '';
 
+    /**
+     * @return mixed
+     * 约定不同类型的log必须实现的log形式函数
+     */
     abstract protected function formatLog();
 
     public function __construct(){
@@ -92,6 +97,7 @@ class ExceptionLog extends  LogBase{
  */
 class RequestLog extends LogBase{
 
+
     public function __construct(){
         $this->_logPath = LOG_PATH.'request'.DS;
     }
@@ -109,21 +115,62 @@ class RequestLog extends LogBase{
         $this->saveLog($content,$this->_logPath,'request-'.date('Ymd').'.log');
     }
 
+
 }
 
 /**
  * Class StorageLog
  * @package frame
- * 操作数据库，redis的错误日志记录
+ * redis或者DB的错误日志
  */
 class StorageLog extends LogBase{
 
-    public function __construct(){
+    private static $statement; //语句
+    private static $msg;  //错误提示语
+    private static $params; //参数
+
+    private $type;  //类型 db 和 redis  默认db
+
+    public function __construct($type){
         $this->_logPath = LOG_PATH.'storage'.DS;
+        $this->type = isset($type)&&!empty($type) ? $type : 'db';
     }
 
     public function formatLog(){
-        
+        $time = date('Y-m-d H:i:s');
+        if(empty(self::$msg) || empty(self::$statement)){
+            $content = "$time 异常信息缺失\n";
+        }else{
+            $statement = self::$statement;
+            $msg = self::$msg;
+            $params = self::$params;
+            $content = "$time $statement $params $msg";
+        }
+        $this->saveLog($content,$this->_logPath,$this->type.'-'.date('Ymd').'.log');
+        //初始化状态
+        self::$statement = '';
+        self::$msg ='';
+        self::$params ='';
+    }
+
+    /**
+     * @param $sql
+     * @param string $params
+     * 记录出错sql和参数
+     */
+    public  function setSql($sql,$params=''){
+        self::$statement = $sql;
+        if(!empty($params)){
+            self::$params = $params;
+        }
+    }
+
+    /**
+     * @param $msg
+     * 记录错误提示语
+     */
+    public  function setMsg($msg){
+        self::$msg = $msg;
     }
 }
 

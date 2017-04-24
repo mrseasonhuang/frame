@@ -14,6 +14,8 @@ class dbService{
     //用于引入配置文件
     private static $_instance_conf = array();
 
+    private static $_LogObj;
+
 
     /*
      * 私有化构造函数
@@ -21,6 +23,9 @@ class dbService{
      *
      */
     private function __construct(){
+        if(ENV == 'online'){
+            self::$_LogObj = LogFactory::load(LOG_STORAGE,'db');
+        }
         if(empty(self::$_instance_conf)){
             $dbConf = CONF_PATH.'db.php';
             self::$_instance_conf = method::frameRequire($dbConf,true);
@@ -70,10 +75,13 @@ class dbService{
     private static function doConnection($conf){
         try{
             $pdo = new \PDO($conf['dsn'],$conf['user'],$conf['password']);
+            //设置pdo报错等级，异常就会报错
             $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }catch(\PDOException $e){
             if(ENV == 'online'){
-                LogFactory::load(LOG_EXCEPTION,$e)->formatLog();
+                self::$_LogObj->setSql('connection error!');
+                self::$_LogObj->setMsg($e->getMessage());
+                self::$_LogObj->formatLog();
             }else{
                 echo $e;
             }
@@ -84,22 +92,6 @@ class dbService{
 
     /*-------------------------------------------具体数据库操作写下面--------------------------------------------------*/
 
-    /*
-     * 简单的一个select例子，要用于实际框架中需要改写成灵活的查询方法
-     * 这里为了方便写死了查询操作
-     */
-    public function select(){
-        if(ENV == 'online'){
-            $connection = self::initConnection('read');
-        }else{
-            $connection = self::initConnection();
-        }
-        $sql = 'select * from test';
-        $query = $connection->prepare($sql);
-        $query->execute();
-        $res = $query->fetchAll(\PDO::FETCH_ASSOC);
-        return $res;
-    }
 
     /**
      * @param $table 表名
@@ -167,23 +159,26 @@ class dbService{
         $sql = "insert into $table ($column) values ($tempStr)";
         $value = array_values($insertArr);
         $res = $this->executeQuery($connection,$sql,$value);
-        if($res){
-            return true;
-        }else{
-            return false;
-        }
+        return $res ? true : false;
     }
 
-    public function updateOne($table,$updateArr,$where){
+    public function updateOne($table,$updateArr,$where=''){
         if(ENV == 'online'){
             $connection = self::initConnection('write');
         }else{
             $connection = self::initConnection();
         }
-        if(empty($insertArr) || !is_array($insertArr)){
+        if(empty($updateArr) || !is_array($updateArr)){
             return false;
         }
-        
+        $column = implode('= ? ,',array_keys($updateArr));
+        $column .= '= ?';
+        $sql = "update $table set $column";
+        if(!empty($where)){
+            $sql .= " where $where";
+        }
+        $res = $this->executeQuery($connection,$sql,array_values($updateArr));
+        return $res ? true : false;
     }
 
     private function executeQuery($connection,$sql,$params=array()){
@@ -195,7 +190,13 @@ class dbService{
             $query->execute($params);
             return $query;
         }catch (\PDOException $e){
-            echo $e->getMessage();
+            if(ENV == 'online'){
+                self::$_LogObj->setSql($sql,json_encode($params));
+                self::$_LogObj->setMsg($e->getMessage());
+                self::$_LogObj->formatLog();
+            }else{
+                echo $e->getMessage();
+            }
             return false;
         }
     }
