@@ -94,9 +94,9 @@ class dbService{
 
 
     /**
-     * @param $table 表名
-     * @param $content 需要查找出的字段
-     * @param $where 查询条件
+     * @param $table ,表名
+     * @param $content ,需要查找出的字段
+     * @param $where ,查询条件
      * @param array $params 条件参数
      * 查找一条数据
      */
@@ -113,9 +113,9 @@ class dbService{
     }
 
     /**
-     * @param $table 表名
-     * @param $content 需要查找出的字段
-     * @param $where 查询条件
+     * @param $table ,表名
+     * @param $content ,需要查找出的字段
+     * @param $where ,查询条件
      * @param array $params 条件参数
      * @return mixed
      * 查找满足条件的所有数据
@@ -133,8 +133,8 @@ class dbService{
     }
 
     /**
-     * @param $table 表名
-     * @param $insertArr 需插入数组
+     * @param $table ,表名
+     * @param $insertArr ,需插入数组
      * @return bool 插入成功返回true 否则返回false
      * 根据输入数组插入数据。
      * 其中插入数组中key为表中的column,value为要插入的值
@@ -162,6 +162,14 @@ class dbService{
         return $res ? true : false;
     }
 
+    /**
+     * @param $table ,表名
+     * @param $updateArr ,更新数组,key是列名,value是要修改的值
+     * @param string $where 修改范围，为空可以修改全表
+     * @return bool 更新成功true **mark 由于mysql中update
+     * 更新一个不存在的行也不会报错，只是会显示修改0行的结果
+     * 修改一行数据
+     */
     public function updateOne($table,$updateArr,$where=''){
         if(ENV == 'online'){
             $connection = self::initConnection('write');
@@ -181,6 +189,72 @@ class dbService{
         return $res ? true : false;
     }
 
+
+    /**
+     * @param $sql
+     * @param $type
+     * @param array $params
+     * @return bool
+     * 执行自定义sql
+     */
+    public function executeSql($sql,$type,$params=array()){
+        if(ENV == 'online'){
+            $connection = self::initConnection($type);
+        }else{
+            $connection = self::initConnection();
+        }
+        return $this->executeQuery($connection,$sql,$params);
+    }
+
+    /*-------------------------------------------事务支持--------------------------------------------------*/
+
+    public function startTransaction(){
+        if(ENV == 'online'){
+            $connection = self::initConnection('write');
+        }else{
+            $connection = self::initConnection();
+        }
+        $connection->exec("set session transaction isolation level repeatable read");
+        $connection->beginTransaction();
+    }
+
+
+    public function commitTransaction(){
+        if(ENV == 'online'){
+            $connection = self::initConnection('write');
+        }else{
+            $connection = self::initConnection();
+        }
+        $connection->commit();
+    }
+
+    public function rollbackTransaction(){
+        if(ENV == 'online'){
+            $connection = self::initConnection('write');
+        }else{
+            $connection = self::initConnection();
+        }
+        $connection->rollBack();
+    }
+
+    public function exec($sql){
+        if(ENV == 'online'){
+            $connection = self::initConnection('write');
+        }else{
+            $connection = self::initConnection();
+        }
+        return $connection->exec($sql);
+    }
+
+
+
+    /*-------------------------------------------公共私有方法--------------------------------------------------*/
+    /**
+     * @param $connection ,mysql链接
+     * @param $sql ,执行sql
+     * @param array $params 参数数组
+     * @return bool
+     */
     private function executeQuery($connection,$sql,$params=array()){
         try{
             if(substr_count($sql,'?') != count($params)){
