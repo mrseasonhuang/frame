@@ -13,9 +13,18 @@ abstract class FrameException extends \Exception{
 
     protected  $_Log;
 
-    final public function dealException(){
+    /**
+     * 初始化log对象
+     */
+    protected function initLog(){
         if(ENV == 'online'){
             $this->_Log = LogFactory::load(LOG_EXCEPTION,$this);
+        }
+    }
+
+    final public function dealException(){
+        if(ENV == 'online'){
+            $this->initLog();
             $this->dealOnline();
         }else{
             //利用Exception 的 __toString
@@ -60,4 +69,26 @@ class UnKnownFileException extends FrameException{
         include_once '404.html';
         exit;
     }
+}
+
+
+class RedisException extends FrameException{
+
+    protected function initLog(){
+        if(ENV == 'online'){
+            $this->_Log = LogFactory::load(LOG_STORAGE,'redis');
+        }
+    }
+
+    protected function dealOnline(){
+        if($this->_Log != false){
+            $this->_Log->setMsg($this->getMessage());
+            $this->_Log->formatLog();
+        }
+        header("HTTP/1.1 404 Not Found");
+        header("Status: 404 Not Found");
+        include_once '404.html';
+        exit;
+    }
+
 }

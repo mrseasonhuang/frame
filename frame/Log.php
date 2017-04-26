@@ -85,7 +85,7 @@ class ExceptionLog extends  LogBase{
     }
 
     public function formatLog(){
-        $content = date('Y-m-d H:i:s').' '.$this->exception."\n";
+        $content = date('Y-m-d H:i:s').' '.$this->exception->getMessage()."\n";
         $this->saveLog($content,$this->_logPath,'exception-'.date('Ymd').'.log');
     }
 }
@@ -138,8 +138,8 @@ class StorageLog extends LogBase{
 
     public function formatLog(){
         $time = date('Y-m-d H:i:s');
-        if(empty(self::$msg) || empty(self::$statement)){
-            $content = "$time 异常信息缺失\n";
+        if(empty(self::$msg) || (empty(self::$statement) && $this->type=='db')){
+            $content = "$time 异常信息缺失";
         }else{
             $statement = self::$statement;
             $msg = self::$msg;
@@ -164,6 +164,7 @@ class StorageLog extends LogBase{
             self::$params = $params;
         }
     }
+
 
     /**
      * @param $msg

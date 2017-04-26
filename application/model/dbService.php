@@ -1,7 +1,7 @@
 <?php
 namespace application\model;
 
-use frame\method;
+use frame\Method;
 use frame\LogFactory;
 
 class dbService{
@@ -14,13 +14,13 @@ class dbService{
     //用于引入配置文件
     private static $_instance_conf = array();
 
+    //日志对象
     private static $_LogObj;
 
 
-    /*
+    /**
      * 私有化构造函数
      * 加载数据库配置
-     *
      */
     private function __construct(){
         if(ENV == 'online'){
@@ -28,18 +28,19 @@ class dbService{
         }
         if(empty(self::$_instance_conf)){
             $dbConf = CONF_PATH.'db.php';
-            self::$_instance_conf = method::frameRequire($dbConf,true);
+            self::$_instance_conf = Method::frameRequire($dbConf,true);
         }
     }
 
-    /*
+    /**
      * 私有化克隆
      */
     private function __clone(){
 
     }
 
-    /*
+    /**
+     *
      * 用于外部使用实例的入口，如果该对象已经被实例化过了，就直接返回静态成员对象
      */
     public static function getInstance(){
@@ -49,7 +50,9 @@ class dbService{
         return self::$_instance;
     }
 
-    /*
+    /**
+     * @param string $type
+     * @return array|\PDO
      * 初始化连接 ，放在需要调用到mysql的方法中，对外部透明
      * 也可以想作是动态加载数据库连接，只有真的需要该连接的时候才会实例化连接
      */
@@ -69,7 +72,9 @@ class dbService{
         }
     }
 
-    /*
+    /**
+     * @param $conf
+     * @return \PDO
      * 实施数据库连接，new PDO的时候 后面还有许多可扩展的自选项，可以配置在conf/db.php里面在此引入
      */
     private static function doConnection($conf){
@@ -214,7 +219,6 @@ class dbService{
         }else{
             $connection = self::initConnection();
         }
-        $connection->exec("set session transaction isolation level repeatable read");
         $connection->beginTransaction();
     }
 
@@ -235,15 +239,6 @@ class dbService{
             $connection = self::initConnection();
         }
         $connection->rollBack();
-    }
-
-    public function exec($sql){
-        if(ENV == 'online'){
-            $connection = self::initConnection('write');
-        }else{
-            $connection = self::initConnection();
-        }
-        return $connection->exec($sql);
     }
 
 

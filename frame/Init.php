@@ -26,7 +26,9 @@ class Init{
      */
     public static function start(){
         //载入错误处理机制
-        self::setErrorReporting();
+        if(SHOW_ERROR == 1){
+            self::setErrorReporting();
+        }
         //设置编码类型
         header("Content-type: text/html; charset=utf-8");
 
@@ -37,12 +39,12 @@ class Init{
 
         try{
             if(!file_exists($file)){
-                throw new UnKnownUrlException('控制器不存在！');
+                throw new UnKnownUrlException($crl.'控制器不存在！');
             }
             Method::frameRequire($file);
             $class = new $crl();
             if (!method_exists($class,$action)) {
-                throw new UnKnownUrlException('方法不存在');
+                throw new UnKnownUrlException($action.'方法不存在');
             }
             $class->$action();
         } catch(UnKnownUrlException $e){
