@@ -7,9 +7,7 @@ use application\model\redisService;
 
 class indexController extends Crl{
     public function indexAction(){
-        $redis = redisService::getInstance();
-        $redis->set('frame','hahahaha');
-        echo $redis->get('frame');
+        echo \frame\Method::getIp();
 
     }
 
